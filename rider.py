@@ -15,8 +15,8 @@ class Rider:
         print(dataString)
         dataList = dataString.split(',')
         print(dataList)
-        Rider.number = dataList[0]
-        Rider.fence = dataList[1]
-        Rider.startTime = dataList[2]
-        Rider.finishTime = dataList[3]
+        Rider.number = int(dataList[0])
+        Rider.fence = int(dataList[1])
+        Rider.startTime = long(dataList[2])
+        Rider.finishTime = long(dataList[3])
         
