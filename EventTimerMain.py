@@ -1,18 +1,21 @@
 import paho.mqtt.client as mqtt
 import os
 import time
+import datetime
 import urllib.parse
 from rider import Rider
-    
+from dbHelper import DbHelper
+  
 #Define event callbacks
 def on_connect(client, userdata, flags, rc):
     print("Connected with a result code of: " + str(rc))
 
 def on_message(client, obj, msg):
     print(msg.topic + " " + str(msg.qos) + " " + str(msg.payload))
-    r = Rider(str(msg.payload))
-    r.parseMessage(msg.payload)
-
+    r = Rider(msg.payload)
+    r.parseMessage()
+    r.insertIntoXCTable(databaseFile)
+    
 def on_publish(client, obj, mid):
     print("mid: " + str(mid))
 
@@ -22,10 +25,18 @@ def on_subscribe(client, obj, mid, granted_qos):
 def on_log(client, obj, level, string):
     print(string)
 
-print("Hello World!")
-
+epoch = datetime.datetime(1970,1,1,0,0,0)
 topic = "startTime/start"
 Connected = False
+databaseFile = "event.db"
+
+db = DbHelper()
+
+db.setDatabaseFile(databaseFile)
+db.openDatabaseFile()
+db.connectToDatabase()
+db.createXCTable()
+db.closeDatabaseFile()
 
 mqttc = mqtt.Client()
 
@@ -55,7 +66,6 @@ try:
         time.sleep(1)
 
 except KeyboardInterrupt:
-    print("Exiting")
     mqttc.disconnect()
     mqttc.loop_stop()
 
