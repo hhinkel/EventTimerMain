@@ -37,4 +37,4 @@ class DbHelper:
             start_time INTEGER,
             finish_time INTEGER)''')
         except TypeError:
-            print("Cannot create rider table")
+            print("Cannot create xcTable table")

@@ -26,7 +26,7 @@ def on_log(client, obj, level, string):
     print(string)
 
 epoch = datetime.datetime(1970,1,1,0,0,0)
-topic = "startTime/start"
+topic = "eventTimer"
 Connected = False
 databaseFile = "event.db"
 
