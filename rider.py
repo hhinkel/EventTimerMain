@@ -64,8 +64,8 @@ class Rider:
             (Rider.number, Rider.fence, Rider.startTime, Rider.finishTime))
             DbHelper.dbConnection.commit()
         if(Rider.fence == 99):
-            DbHelper.dbCursor.execute("UPDATE xcTable SET finish_time = ? WHERE rider_num = ?",
-            (Rider.finishTime, Rider.number))
+            DbHelper.dbCursor.execute("UPDATE xcTable SET fence_num = ?, finish_time = ? WHERE rider_num = ?",
+            (Rider.fence, Rider.finishTime, Rider.number))
             DbHelper.dbConnection.commit()
 
         db.closeDatabaseFile()
