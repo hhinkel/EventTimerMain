@@ -5,9 +5,11 @@ class Rider:
     
     message = None
     number = None
+    division = None
     fence = None
     startTime = None
     finishTime = None
+    edit = None
 
     def __init__(self, msg):
         Rider.message = msg.decode('utf-8')
@@ -17,12 +19,17 @@ class Rider:
         dataList = Rider.message.split(',')
         print(dataList)
         Rider.number = int(dataList[0])
-        Rider.fence = int(dataList[1])
-        Rider.startTime = int(dataList[2])
-        Rider.finishTime = int(dataList[3])
+        Rider.division = String(dataList[1])
+        Rider.fence = int(dataList[2])
+        Rider.startTime = int(dataList[3])
+        Rider.finishTime = int(dataList[4])
+        Rider.edit = int(dataList[5])
 
     def getNumber(self):
         return Rider.number
+    
+    def getDivision(self):
+        return Rider.division
     
     def getFence(self):
         if (not Rider.fence):
@@ -39,6 +46,9 @@ class Rider:
 
     def getFinishTime(self):
         return Rider.finishTime
+    
+    def getEdit(self):
+        return Rider.edit
 
     def parseStartTime(self):
         if ((not startTime) or (startTime == 0)):
@@ -61,7 +71,7 @@ class Rider:
 
         if(Rider.fence == 0):
             DbHelper.dbCursor.execute("INSERT INTO xcTable VALUES (?,?,?,?)",
-            (Rider.number, Rider.fence, Rider.startTime, Rider.finishTime))
+            (Rider.number, Rider.division, Rider.fence, Rider.startTime, Rider.finishTime, Rider.edit))
             DbHelper.dbConnection.commit()
         if(Rider.fence == 99):
             DbHelper.dbCursor.execute("UPDATE xcTable SET fence_num = ?, finish_time = ? WHERE rider_num = ?",
