@@ -30,11 +30,20 @@ class DbHelper:
 
     def createXCTable(self):
         try:
-            
-            DbHelper.dbCursor.execute('''CREATE TABLE IF NOT EXISTS xcTable 
+            String CREATE_XC_TABLE = '''CREATE TABLE IF NOT EXISTS xcTable
             (rider_num INTEGER PRIMARY KEY,
+            division TEXT NOT NULL,
             fence_num INTEGER NOT NULL,
             start_time INTEGER,
-            finish_time INTEGER)''')
+            finish_time INTEGER,
+            edit INTEGER CHECK(edit <= 1))'''
+            
+            DbHelper.dbCursor.execute(CREATE_XC_TABLE)
+            
+            #DbHelper.dbCursor.execute('''CREATE TABLE IF NOT EXISTS xcTable 
+            #(rider_num INTEGER PRIMARY KEY,
+            #fence_num INTEGER NOT NULL,
+            #start_time INTEGER,
+            #finish_time INTEGER)''')
         except TypeError:
             print("Cannot create xcTable table")
