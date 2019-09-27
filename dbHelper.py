@@ -16,8 +16,8 @@ class DbHelper:
         try:
             DbHelper.dbConnection = sqlite3.connect(DbHelper.riderDbFile)
             DbHelper.dbCursor = DbHelper.dbConnection.cursor()
-        except ConnectionError:
-            print("Cannot connect to Database " + DbHelper.riderDbFile)
+        except sqlite3.DatabaseError as error:
+            print("Cannot connect to Database ",DbHelper.riderDbFile, " ", error.args[0])
 
     def openDatabaseFile(self):
         try:
@@ -30,20 +30,25 @@ class DbHelper:
 
     def createXCTable(self):
         try:
-            String CREATE_XC_TABLE = '''CREATE TABLE IF NOT EXISTS xcTable
+            DbHelper.dbCursor.execute('''CREATE TABLE IF NOT EXISTS xcTable
             (rider_num INTEGER PRIMARY KEY,
             division TEXT NOT NULL,
             fence_num INTEGER NOT NULL,
             start_time INTEGER,
             finish_time INTEGER,
-            edit INTEGER CHECK(edit <= 1))'''
+            edit INTEGER CHECK(edit <= 1))''')
             
-            DbHelper.dbCursor.execute(CREATE_XC_TABLE)
-            
-            #DbHelper.dbCursor.execute('''CREATE TABLE IF NOT EXISTS xcTable 
-            #(rider_num INTEGER PRIMARY KEY,
-            #fence_num INTEGER NOT NULL,
-            #start_time INTEGER,
-            #finish_time INTEGER)''')
-        except TypeError:
-            print("Cannot create xcTable table")
+        except sqlite3.Error as error:
+            print("Cannot create xcTable table:", error.args[0])
+
+    def createXCErrorTable(self):
+        try:
+            DbHelper.dbCursor.execute('''CREATE TABLE IF NOT EXISTS xcErrorTable
+            (id INTEGER PRIMARY KEY AUTOINCREMENT,
+            rider_num INTEGER NOT NULL,
+            division TEXT NOT NULL,
+            fence_num INTEGER NOT NULL,
+            error_num INTEGER NOT NULL,
+            error_text TEXT))''')
+        except sqlite3.Error as error:
+            print("Cannot create xcErrorTable:", error.args[0])

@@ -19,7 +19,7 @@ class Rider:
         dataList = Rider.message.split(',')
         print(dataList)
         Rider.number = int(dataList[0])
-        Rider.division = String(dataList[1])
+        Rider.division = dataList[1]
         Rider.fence = int(dataList[2])
         Rider.startTime = int(dataList[3])
         Rider.finishTime = int(dataList[4])

@@ -36,6 +36,7 @@ db.setDatabaseFile(databaseFile)
 db.openDatabaseFile()
 db.connectToDatabase()
 db.createXCTable()
+db.createXCErrorTable()
 db.closeDatabaseFile()
 
 mqttc = mqtt.Client()
@@ -47,7 +48,7 @@ mqttc.on_publish = on_publish
 mqttc.on_subscribe = on_subscribe
 
 #Uncomment to enable debug messages
-mqttc.on_log = on_log
+#mqttc.on_log = on_log
 
 #Connect
 mqttc.username_pw_set('yrzlekwy', '')
