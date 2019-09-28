@@ -51,7 +51,7 @@ mqttc.on_subscribe = on_subscribe
 #mqttc.on_log = on_log
 
 #Connect
-mqttc.username_pw_set('yrzlekwy', '')
+mqttc.username_pw_set('yrzlekwy', 'pBVkVlJy413x')
 mqttc.connect('soldier.cloudmqtt.com', 16424)
 
 #Start subscribe, with Qos level 0
