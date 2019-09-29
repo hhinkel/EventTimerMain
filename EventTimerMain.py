@@ -14,7 +14,7 @@ def on_message(client, obj, msg):
     print(msg.topic + " " + str(msg.qos) + " " + str(msg.payload))
     r = Rider(msg.payload)
     r.parseMessage()
-    r.insertIntoXCTable(databaseFile)
+    r.updateTables(databaseFile)
     
 def on_publish(client, obj, mid):
     print("mid: " + str(mid))
@@ -51,7 +51,7 @@ mqttc.on_subscribe = on_subscribe
 #mqttc.on_log = on_log
 
 #Connect
-mqttc.username_pw_set('yrzlekwy', '')
+mqttc.username_pw_set('yrzlekwy', 'pBVkVlJy413x')
 mqttc.connect('soldier.cloudmqtt.com', 16424)
 
 #Start subscribe, with Qos level 0

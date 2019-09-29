@@ -1,4 +1,5 @@
 import datetime
+import sqlite3
 from dbHelper import DbHelper
 
 class Rider:
@@ -62,13 +63,47 @@ class Rider:
         else:
             return datetime.datetime.utcfromtimestamp(Rider.finishTime)
 
-    def insertIntoXCTable(self, file):
+    def updateTables(self, file):
         db = DbHelper()
 
         db.setDatabaseFile(file)
         db.openDatabaseFile()
         db.connectToDatabase()
 
+        if(Rider.edit == 'null'):
+            Rider.insertIntoXCTable(self)
+        elif(Rider.edit == 'D' and Rider.fence == 0):
+            Rider.removeFromXCTable(self)
+            Rider.insertIntoXCErrorTable(self, 2, "Rider deleted at start")
+        elif (Rider.edit == 'D' and Rider.fence == 99):
+            Rider.fence= 0
+            Rider.finishTime = 0
+            Rider.updateRiderInXCTable(self)
+            Rider.insertIntoXCErrorTable(self, 3, "Rider deleted at finish")
+        elif(Rider.number == int(Rider.edit)):
+            Rider.updateRiderInXCTable(self)
+            errText = "Rider division edited to " + Rider.division
+            Rider.insertIntoXCErrorTable(self, 4, errText)
+        elif(int(Rider.edit) and Rider.fence == 0):
+            number = Rider.number
+            Rider.number = int(Rider.edit)
+            Rider.removeFromXCTable(self)
+            errText = "Rider number edited from " + str(Rider.number) + " to " + str(number)
+            Rider.insertIntoXCErrorTable(self, 5, errText)
+            Rider.number = number
+            Rider.insertIntoXCTable(self)
+        elif(int(Rider.edit) and Rider.fence == 99):
+            number = Rider.number
+            Rider.number = int(Rider.edit)
+            Rider.removeFromXCTable(self)
+            errText = "Rider number edited from " + str(Rider.number) + " to " + str(number) + ". Entry not removed from xcTable"
+            Rider.insertIntoXCErrorTable(self, 6, errText)
+        else:
+            Rider.insertIntoXCErrorTable(self, 1, "Error in updateTables")
+
+        db.closeDatabaseFile()
+
+    def insertIntoXCTable(self):
         if(Rider.fence == 0):
             DbHelper.dbCursor.execute("INSERT INTO xcTable VALUES (?,?,?,?,?,?)",
              (Rider.number, Rider.division, Rider.fence, Rider.startTime, Rider.finishTime, Rider.edit))
@@ -78,4 +113,17 @@ class Rider:
              (Rider.fence, Rider.finishTime, Rider.number))
             DbHelper.dbConnection.commit()
 
-        db.closeDatabaseFile()
+    def removeFromXCTable(self):
+        DbHelper.dbCursor.execute("DELETE FROM xcTable WHERE rider_num = ?",
+         (Rider.number,))
+        DbHelper.dbConnection.commit()
+
+    def updateRiderInXCTable(self):
+        DbHelper.dbCursor.execute("UPDATE xcTable SET division = ? WHERE rider_num = ?",
+         (Rider.division, Rider.number))
+        DbHelper.dbConnection.commit()
+        
+    def insertIntoXCErrorTable (self, errNum, errText):
+        DbHelper.dbCursor.execute("INSERT INTO xcErrorTable VALUES (?,?,?,?,?)",
+         (Rider.number, Rider.division, Rider.fence, errNum, errText))
+        DbHelper.dbConnection.commit()

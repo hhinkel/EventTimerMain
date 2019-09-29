@@ -18,7 +18,6 @@ class DbHelper:
             DbHelper.dbCursor = DbHelper.dbConnection.cursor()
         except sqlite3.DatabaseError as error:
             print("Cannot connect to Database ",DbHelper.riderDbFile, " ", error.args[0])
-
     def openDatabaseFile(self):
         try:
             DbHelper.dbConnection = open(DbHelper.riderDbFile,"a")
@@ -44,8 +43,7 @@ class DbHelper:
     def createXCErrorTable(self):
         try:
             DbHelper.dbCursor.execute('''CREATE TABLE IF NOT EXISTS xcErrorTable
-            (id INTEGER PRIMARY KEY AUTOINCREMENT,
-            rider_num INTEGER NOT NULL,
+            (rider_num INTEGER NOT NULL,
             division TEXT NOT NULL,
             fence_num INTEGER NOT NULL,
             error_num INTEGER NOT NULL,
