@@ -41,10 +41,24 @@ class DbHelper:
         except sqlite3.Error as error:
             print("Cannot create xcTable table:", error.args[0])
 
+    def createFenceTable(self):
+        try:
+            DbHelper.dbCursor.execute('''CREATE TABLE IF NOT EXISTS xcFenceTable
+            (rider_num INTEGER NOT NULL,
+            division TEXT NOT NULL,
+            fence_num INTEGER NOT NULL,
+            score INTEGER,
+            PRIMARY KEY(rider_num, division, fence_num),
+            FOREIGN KEY(rider_num) REFERENCES xcTable(rider_num)
+            )''')
+        except sqlite3.Error as error:
+            print("Cannot create xcFenceTable:", error.args[0])
+
     def createXCErrorTable(self):
         try:
             DbHelper.dbCursor.execute('''CREATE TABLE IF NOT EXISTS xcErrorTable
-            (rider_num INTEGER NOT NULL,
+            (id INTEGER PRIMARY KEY,
+            rider_num INTEGER NOT NULL,
             division TEXT NOT NULL,
             fence_num INTEGER NOT NULL,
             error_num INTEGER NOT NULL,
