@@ -36,6 +36,7 @@ db.setDatabaseFile(databaseFile)
 db.openDatabaseFile()
 db.connectToDatabase()
 db.createXCTable()
+db.createFenceTable()
 db.createXCErrorTable()
 db.closeDatabaseFile()
 
