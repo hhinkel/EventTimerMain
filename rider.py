@@ -106,36 +106,46 @@ class Rider:
     def insertIntoXCTable(self):
         if(Rider.fence == 0):
             if(Rider.checkIfRiderExists(self) == False):
-                DbHelper.dbCursor.execute("INSERT INTO xcTable VALUES (?,?,?,?,?,?)",
-                 (Rider.number, Rider.division, Rider.fence, Rider.startTime, Rider.finishTime, Rider.edit))
+                DbHelper.dbCursor.execute("INSERT INTO xcTable VALUES (?,?,?,?,?,?,?)",
+                 (Rider.number, Rider.division, Rider.fence, Rider.startTime, Rider.finishTime, 0, Rider.edit))
                 DbHelper.dbConnection.commit()
             else:
                 errText = "Rider number " + str(Rider.number) + " already exists in xcTable"
                 Rider.insertIntoXCErrorTable(self, 7, errText)
         if(Rider.fence == 99):
             if(Rider.checkIfFinishExists(self) == False):
-                DbHelper.dbCursor.execute("UPDATE xcTable SET fence_num = ?, finish_time = ? WHERE rider_num = ?",
-                 (Rider.fence, Rider.finishTime, Rider.number))
+                DbHelper.dbCursor.execute("SELECT start_time FROM xcTable WHERE rider_num = ?", (Rider.number,))
+                startTime = DbHelper.dbCursor.fetchone()[0]
+                if(startTime > Rider.finishTime):
+                    errText = " For rider number " + str(Rider.number) + " the start " + str(startTime) + " time is after the finish time " + str(Rider.finishTime) + "."
+                    Rider.insertIntoXCErrorTable(self, 8, errText)
+                else:
+                    DbHelper.dbCursor.execute("UPDATE xcTable SET fence_num = ?, finish_time = ? WHERE rider_num = ?",
+                     (Rider.fence, Rider.finishTime, Rider.number))
                 DbHelper.dbConnection.commit()
             else:
                 errText = "Rider number " + str(Rider.number) + " already has a finish time in xcTable. New Time " + str(Rider.finishTime)
-                Rider.insertIntoXCErrorTable(self, 8, errText)
+                Rider.insertIntoXCErrorTable(self, 9, errText)
     
     def checkIfRiderExists(self):
         DbHelper.dbCursor.execute("SELECT rider_num FROM xcTable WHERE rider_num = ?", (Rider.number,))
         data = DbHelper.dbCursor.fetchall()
-        if(len(data) != 0):
-            return True
-        else:
+        if(len(data) == 0):
             return False
+        elif (data[0] == 0):
+            return False
+        else:
+            return True
 
     def checkIfFinishExists(self):
         DbHelper.dbCursor.execute("SELECT finish_time FROM xcTable WHERE rider_num = ?", (Rider.number,))
-        data = DbHelper.dbCursor.fetchall()
-        if(len(data) != 0):
-            return True
-        else:
+        data = DbHelper.dbCursor.fetchone()
+        if(len(data) == 0):
             return False
+        elif(data[0] == 0):
+            return False
+        else:
+            return True
     
     def removeFromXCTable(self):
         DbHelper.dbCursor.execute("DELETE FROM xcTable WHERE rider_num = ?",
