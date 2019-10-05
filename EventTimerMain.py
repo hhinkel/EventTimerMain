@@ -3,9 +3,11 @@ import os
 import time
 import datetime
 import urllib.parse
+import json
 from rider import Rider
 from dbHelper import DbHelper
-  
+from setup import Setup
+
 #Define event callbacks
 def on_connect(client, userdata, flags, rc):
     print("Connected with a result code of: " + str(rc))
@@ -14,7 +16,7 @@ def on_message(client, obj, msg):
     print(msg.topic + " " + str(msg.qos) + " " + str(msg.payload))
     r = Rider(msg.payload)
     r.parseMessage()
-    r.updateTables(databaseFile)
+    r.updateTables(setup.databaseFile)
     
 def on_publish(client, obj, mid):
     print("mid: " + str(mid))
@@ -26,13 +28,14 @@ def on_log(client, obj, level, string):
     print(string)
 
 epoch = datetime.datetime(1970,1,1,0,0,0)
-topic = "eventTimer"
+file = "setup.json"
 Connected = False
-databaseFile = "event.db"
+
+setup = Setup(file)
 
 db = DbHelper()
 
-db.setDatabaseFile(databaseFile)
+db.setDatabaseFile(setup.databaseFile)
 db.openDatabaseFile()
 db.connectToDatabase()
 db.createXCTable()
@@ -52,11 +55,11 @@ mqttc.on_subscribe = on_subscribe
 #mqttc.on_log = on_log
 
 #Connect
-mqttc.username_pw_set('yrzlekwy', '')
-mqttc.connect('soldier.cloudmqtt.com', 16424)
+mqttc.username_pw_set(setup.user, setup.key)
+mqttc.connect(setup.server, int(setup.port))
 
 #Start subscribe, with Qos level 0
-mqttc.subscribe(topic, 0)
+mqttc.subscribe(setup.topic, 0)
 
 mqttc.loop_start()
 
