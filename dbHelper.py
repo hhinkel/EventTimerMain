@@ -57,8 +57,7 @@ class DbHelper:
     def createXCErrorTable(self):
         try:
             DbHelper.dbCursor.execute('''CREATE TABLE IF NOT EXISTS xcErrorTable
-            (id INTEGER PRIMARY KEY,
-            rider_num INTEGER NOT NULL,
+            (rider_num INTEGER NOT NULL,
             division TEXT NOT NULL,
             fence_num INTEGER NOT NULL,
             error_num INTEGER NOT NULL,
