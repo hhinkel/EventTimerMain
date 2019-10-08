@@ -1,5 +1,6 @@
 import sqlite3
 
+
 class DbHelper:
     
     riderDbFile = None
@@ -18,7 +19,14 @@ class DbHelper:
             DbHelper.dbCursor = DbHelper.dbConnection.cursor()
         except sqlite3.DatabaseError as error:
             print("Cannot connect to Database ",DbHelper.riderDbFile, " ", error.args[0])
-    def openDatabaseFile(self):
+
+    def openDatabaseFileRead(self):
+        try:
+            DbHelper.dbConnection = open(DbHelper.riderDbFile,"ro")
+        except FileNotFoundError:
+            print("Cannot open or create database file " + DbHelper.riderDbFile)
+
+    def openDatabaseFileAppend(self):
         try:
             DbHelper.dbConnection = open(DbHelper.riderDbFile,"a")
         except FileNotFoundError:
@@ -39,7 +47,7 @@ class DbHelper:
             edit TEXT)''')
             
         except sqlite3.Error as error:
-            print("Cannot create xcTable table:", error.args[0])
+            print("Cannot create xcTable table: ", error.args[0])
 
     def createFenceTable(self):
         try:
@@ -52,7 +60,7 @@ class DbHelper:
             FOREIGN KEY(rider_num) REFERENCES xcTable(rider_num)
             )''')
         except sqlite3.Error as error:
-            print("Cannot create xcFenceTable:", error.args[0])
+            print("Cannot create xcFenceTable: ", error.args[0])
 
     def createXCErrorTable(self):
         try:
@@ -63,4 +71,18 @@ class DbHelper:
             error_num INTEGER NOT NULL,
             error_text TEXT)''')
         except sqlite3.Error as error:
-            print("Cannot create xcErrorTable:", error.args[0])
+            print("Cannot create xcErrorTable: ", error.args[0])
+
+    def createXCResultTable(self):
+        try:
+            self.dbCursor.execute(''' CREATE TABLEOF NOT EXISTS xcResultTable
+            (rider_num INTEGER PRIMARY KEY,
+            division TEXT NOT NULL,
+            start_time INTEGER NOT NULL,
+            finish_time INTEGER,
+            time_oncourse INTEGER,
+            time_faults INTEGER,
+            speed_faults INTEGER,
+            total_faults INTEGER)''')
+        except sqlite3.Error as error:
+            print("Cannot create xcResultTable: ", error.args[0])
