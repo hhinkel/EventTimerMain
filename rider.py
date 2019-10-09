@@ -1,5 +1,4 @@
 import datetime
-import sqlite3
 from dbHelper import DbHelper
 
 class Rider:
@@ -19,12 +18,20 @@ class Rider:
         print(Rider.message)
         dataList = Rider.message.split(',')
         print(dataList)
-        Rider.number = int(dataList[0])
-        Rider.division = dataList[1]
-        Rider.fence = int(dataList[2])
-        Rider.startTime = int(dataList[3])
-        Rider.finishTime = int(dataList[4])
-        Rider.edit = dataList[5]
+        self.number = int(dataList[0])
+        self.division = dataList[1]
+        self.fence = int(dataList[2])
+        self.startTime = int(dataList[3])
+        self.finishTime = int(dataList[4])
+        self.edit = dataList[5]
+
+    def setriderdata(self, riderdata):
+        self.number = riderdata[0]
+        self.division = riderdata[1]
+        self.fence = riderdata[2]
+        self.startTime = riderdata[3]
+        self.finishTime = riderdata[4]
+        self.edit = riderdata[5]
 
     def getNumber(self):
         return Rider.number
@@ -67,7 +74,7 @@ class Rider:
         db = DbHelper()
 
         db.setDatabaseFile(file)
-        db.openDatabaseFile()
+        # db.openDatabaseFileAppend()
         db.connectToDatabase()
 
         if(Rider.edit == 'null'):

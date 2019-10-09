@@ -75,7 +75,7 @@ class DbHelper:
 
     def createXCResultTable(self):
         try:
-            self.dbCursor.execute(''' CREATE TABLEOF NOT EXISTS xcResultTable
+            self.dbCursor.execute('''CREATE TABLE IF NOT EXISTS xcResultTable
             (rider_num INTEGER PRIMARY KEY,
             division TEXT NOT NULL,
             start_time INTEGER NOT NULL,
@@ -83,6 +83,7 @@ class DbHelper:
             time_oncourse INTEGER,
             time_faults INTEGER,
             speed_faults INTEGER,
-            total_faults INTEGER)''')
+            total_faults INTEGER,
+            error INTEGER)''')
         except sqlite3.Error as error:
             print("Cannot create xcResultTable: ", error.args[0])
