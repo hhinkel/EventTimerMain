@@ -177,6 +177,6 @@ class Rider:
          (Rider.number, Rider.division, Rider.fence, errNum, errText))
         DbHelper.dbConnection.commit()
 
-    def calculateTimeOnCourse(self, startTime, finishTime):
-        return startTime - finishTime
+    def calculateTimeOnCourse(self):
+        return 60 / (self.startTime - self.finishTime)
 

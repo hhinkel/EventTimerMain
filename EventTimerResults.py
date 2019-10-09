@@ -31,6 +31,6 @@ for division in alldivisions:
     divisionresults = res.getresultsfordivision(setup.databaseFile, div.division)
 
     for result in divisionresults:
-        res.calculateresults(result, div.optTime, div.minTime)
+        res.calculateresults(result, div.optTimeSec, div.minTimeSec, div.timeLimit)
 
 

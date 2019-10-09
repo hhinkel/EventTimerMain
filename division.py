@@ -7,11 +7,12 @@ class Division:
         self.division = None
         self.optSpeed = None
         self.maxSpeed = None
+        self.timeLimit = None
         self.distance = None
         self.numOfFences = None
         self.numOfRiders = None
-        self.optTime = None
-        self.minTime = None
+        self.optTimeSec = None
+        self.minTimeSec = None
 
     def getalldivisions(self, file):
         db = DbHelper()
@@ -39,8 +40,9 @@ class Division:
         self.division = div[0]
         self.optSpeed = div[1]
         self.maxSpeed = div[2]
-        self.distance = div[3]
+        self.timeLimit = div[3]
+        self.distance = div[4]
         self.numOfFences = div[4]
-        self.numOfRiders = div[5]
-        self.optTime = self.optSpeed * self.distance
-        self.minTime = self.maxSpeed * self.distance
+        self.numOfRiders = div[6]
+        self.optTimeSec = (self.distance / self.optTime) * 60
+        self.minTimeSec = (self.distance / self.maxSpeed) * 60
