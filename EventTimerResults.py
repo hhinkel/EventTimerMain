@@ -33,4 +33,4 @@ for division in alldivisions:
     for result in divisionresults:
         res.calculateresults(result, div.optTimeSec, div.minTimeSec, div.timeLimit)
 
-
+        # put results in database
