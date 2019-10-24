@@ -13,7 +13,8 @@ class Rider:
     edit = None
 
     def __init__(self, msg):
-        self.message = msg.decode('utf-8')
+        if msg:
+            self.message = msg.decode('utf-8')
         
     def parseMessage(self):
         print(self.message)
