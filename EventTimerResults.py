@@ -33,11 +33,13 @@ alldivisions = div.getalldivisions(setup.databaseFile)
 
 for division in alldivisions:
     div.setdivisionresults(division)
-    res = Results()
+    print(f'\t{div.division} {div.optSpeed} {div.maxSpeed} {div.timeLimit} {div.distance}'
+          f' {div.numOfFences} {div.numOfRiders} {div.optTimeSec} {div.minTimeSec}')
+    '''   res = Results()
 
     divisionresults = res.getresultsfordivision(setup.databaseFile, div.division)
 
     for result in divisionresults:
         res.calculateresults(result, div.optTimeSec, div.minTimeSec, div.timeLimit)
 
-        # put results in database
+        # put results in database  '''

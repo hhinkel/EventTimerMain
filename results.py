@@ -5,7 +5,7 @@ class Results:
     # 0.4 faults per second over optimum time or under speed fault time
     faultValue = 0.4
 
-    def __init__(self):
+    """ def __init__(self):
         self.riderNum = None
         self.division = None
         self.startTime = None
@@ -13,7 +13,7 @@ class Results:
         self.timeOnCourse = None
         self.timeFaults = None
         self.speedFaults = None
-        self.overTime = None
+        self.overTime = None   """
 
     def getresultsfordivision(self, file, division):
         db = DbHelper()
@@ -21,7 +21,7 @@ class Results:
         db.setDatabaseFile(file)
         db.connectToDatabase()
 
-        DbHelper.dbCursor.execute("SELECT * FROM xcTable WHERE division = ?", (division[0],))
+        DbHelper.dbCursor.execute("SELECT * FROM xcTable WHERE division = ?", (division,))
         rows = DbHelper.dbCursor.fetchall()
 
         db.closeDatabaseFile()
@@ -37,26 +37,30 @@ class Results:
         # format the start and finish times here?
         self.startTime = rider.startTime
         self.finishTime = rider.finishTime
-        self.timeOnCourse = rider.calculateTimeOnCourse()
+        self.timeOnCourse = self.calculateTimeOnCourse()
         self.timeFaults = self.calculatetimefaults(opttime)
         self.speedFaults = self.calculatespeedfaults(mintime)
         self.overTime = self.determineifovertime(timelimit)
+        return rider
+
+    def calculateTimeOnCourse(self):
+        return 60 / (self.startTime - self.finishTime)
 
     def calculatetimefaults(self, opttime):
-        if (self.timeOnCourse < opttime):
+        if self.timeOnCourse < opttime:
             return 0
         else:
             return (self.timeOnCourse - opttime) * self.faultValue
 
     def calculatespeedfaults(self, mintime):
         # need to check for division here as no speed above Training
-        if (self.timeOnCourse > mintime):
+        if self.timeOnCourse > mintime:
             return 0
         else:
             return (mintime - self.timeOnCourse) * self.faultValue
 
     def determineifovertime(self, timelimit):
-        if (self.timeOnCourse > timelimit):
+        if self.timeOnCourse > timelimit:
             return True
         else:
             return False

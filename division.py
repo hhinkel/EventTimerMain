@@ -20,7 +20,7 @@ class Division:
         db.setDatabaseFile(file)
         db.connectToDatabase()
 
-        DbHelper.dbCursor.execute("SELECT * FROM divisionTable")
+        DbHelper.dbCursor.execute("SELECT * FROM xcDivisionTable ")
         rows =  DbHelper.dbCursor.fetchall()
         db.closeDatabaseFile()
         return rows
@@ -31,7 +31,7 @@ class Division:
         db.setDatabaseFile(file)
         db.connectToDatabase()
 
-        DbHelper.dbCursor.execute("SELECT division FROM divisionTable WHERE division = ?", (division,))
+        DbHelper.dbCursor.execute("SELECT * FROM xcDivisionTable WHERE division = ?", (division,))
         row = DbHelper.dbCursor.fetchall()
         db.closeDatabaseFile()
         return row
@@ -42,7 +42,7 @@ class Division:
         self.maxSpeed = div[2]
         self.timeLimit = div[3]
         self.distance = div[4]
-        self.numOfFences = div[4]
+        self.numOfFences = div[5]
         self.numOfRiders = div[6]
-        self.optTimeSec = (self.distance / self.optTime) * 60
-        self.minTimeSec = (self.distance / self.maxSpeed) * 60
+        self.optTimeSec = int((self.distance / self.optSpeed) * 60)
+        self.minTimeSec = int((self.distance / self.maxSpeed) * 60)
