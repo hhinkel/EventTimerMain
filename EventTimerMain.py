@@ -37,15 +37,7 @@ Connected = False
 setup = Setup(file)
 
 db = DbHelper()
-
-db.setDatabaseFile(setup.databaseFile)
-# do I need to open the database? Or does connecting to the database open it also?
-# db.openDatabaseFileAppend()
-db.connectToDatabase()
-db.createXCTable()
-db.createFenceTable()
-db.createXCErrorTable()
-db.closeDatabaseFile()
+db.createdatabase(setup.databaseFile)
 
 mqttc = mqtt.Client()
 

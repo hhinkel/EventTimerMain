@@ -10,6 +10,14 @@ class DbHelper:
     def __init__(self):
         pass
 
+    def createdatabase(self, file):
+        self.setDatabaseFile(file)
+        self.connectToDatabase()
+        self.createXCTable()
+        self.createFenceTable()
+        self.createXCErrorTable()
+        self.closeDatabaseFile()
+
     def setDatabaseFile(self, filename):
         DbHelper.riderDbFile = filename
 
@@ -43,7 +51,6 @@ class DbHelper:
             fence_num INTEGER NOT NULL,
             start_time INTEGER,
             finish_time INTEGER,
-            time_oncourse INTEGER,
             edit TEXT)''')
             
         except sqlite3.Error as error:

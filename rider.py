@@ -76,7 +76,6 @@ class Rider:
         db = DbHelper()
 
         db.setDatabaseFile(file)
-        # db.openDatabaseFileAppend()
         db.connectToDatabase()
 
         if self.edit == 'null':
@@ -115,8 +114,8 @@ class Rider:
     def insertIntoXCTable(self):
         if self.fence == 0:
             if self.checkIfRiderExists() is False:
-                DbHelper.dbCursor.execute("INSERT INTO xcTable VALUES (?,?,?,?,?,?,?)",
-                 (self.number, self.division, self.fence, self.startTime, self.finishTime, 0, self.edit))
+                DbHelper.dbCursor.execute("INSERT INTO xcTable VALUES (?,?,?,?,?,?)",
+                 (self.number, self.division, self.fence, self.startTime, self.finishTime, self.edit))
                 DbHelper.dbCursor.execute("INSERT INTO xcFenceTable VALUES (?,?,?,?)",
                  (self.number, self.division, self.fence, self.startTime))
                 DbHelper.dbConnection.commit()
@@ -134,9 +133,8 @@ class Rider:
                     errText = " For rider number " + str(self.number) + " the start " + str(startTime) + " time is after the finish time " + str(self.finishTime) + "."
                     self.insertIntoXCErrorTable(9, errText)
                 else:
-                    timeOnCourse = self.finishTime - startTime
-                    DbHelper.dbCursor.execute("UPDATE xcTable SET fence_num = ?, finish_time = ?, time_oncourse = ? WHERE rider_num = ?",
-                     (self.fence, self.finishTime, timeOnCourse, self.number))
+                    DbHelper.dbCursor.execute("UPDATE xcTable SET fence_num = ?, finish_time = ? WHERE rider_num = ?",
+                     (self.fence, self.finishTime, self.number))
                     DbHelper.dbCursor.execute("INSERT INTO xcFenceTable VALUES (?,?,?,?)",
                      (self.number, self.division, self.fence, self.finishTime))
                     DbHelper.dbConnection.commit()
@@ -179,6 +177,4 @@ class Rider:
          (self.number, self.division, self.fence, errNum, errText))
         DbHelper.dbConnection.commit()
 
-    def calculateTimeOnCourse(self):
-        return 60 / (self.startTime - self.finishTime)
 
