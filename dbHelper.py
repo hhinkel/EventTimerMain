@@ -7,9 +7,6 @@ class DbHelper:
     dbConnection = None
     dbCursor = None
     
-    def __init__(self):
-        pass
-
     def createdatabase(self, file):
         self.setDatabaseFile(file)
         self.connectToDatabase()
@@ -90,7 +87,19 @@ class DbHelper:
             time_oncourse INTEGER,
             time_faults INTEGER,
             speed_faults INTEGER,
+            over_Time INTEGER,
             total_faults INTEGER,
             error INTEGER)''')
         except sqlite3.Error as error:
             print("Cannot create xcResultTable: ", error.args[0])
+
+    def getresultsfordivision(self, file, division):
+        self.setDatabaseFile(file)
+        self.connectToDatabase()
+
+        self.dbCursor.execute("SELECT * FROM xcTable WHERE division = ?", (division,))
+        rows = DbHelper.dbCursor.fetchall()
+
+        self.closeDatabaseFile()
+
+        return rows

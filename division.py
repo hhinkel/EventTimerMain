@@ -3,17 +3,6 @@ from dbHelper import DbHelper
 
 class Division:
 
-    def __init__(self):
-        self.division = None
-        self.optSpeed = None
-        self.maxSpeed = None
-        self.timeLimit = None
-        self.distance = None
-        self.numOfFences = None
-        self.numOfRiders = None
-        self.optTimeSec = None
-        self.minTimeSec = None
-
     def getalldivisions(self, file):
         db = DbHelper()
 
