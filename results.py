@@ -27,8 +27,8 @@ class Results:
     def calculateTimeOnCourse(self):
         if self.finishTime is 0:
             return None
-        elif self.startTime - self.finishTime > 0:
-            return 60 / (self.startTime - self.finishTime)
+        elif self.finishTime - self.startTime > 0:
+            return (self.finishTime - self.startTime)
         else:
             return 0
 
@@ -38,7 +38,8 @@ class Results:
         elif self.timeOnCourse < opttime:
             return 0
         else:
-            return (self.timeOnCourse - opttime) * self.faultValue
+            faults = (self.timeOnCourse - opttime) * self.faultValue
+            return "{:3.2f}".format(faults)
 
     def calculatespeedfaults(self, minTime=None):
         if self.timeOnCourse is None:
@@ -48,7 +49,8 @@ class Results:
         elif self.timeOnCourse > minTime:
             return 0
         else:
-            return (minTime - self.timeOnCourse) * self.faultValue
+            faults =  (minTime - self.timeOnCourse) * self.faultValue
+            return "{:3.2f}".format(faults)
 
     def determineifovertime(self, timelimit):
         if self.timeOnCourse is None:
@@ -66,7 +68,7 @@ class Results:
         elif self.speedFaults is None:
             return self.timeFaults
         else:
-            return self.timeFaults + self.speedFaults
+            return float(self.timeFaults) + float(self.speedFaults)
 
     def determineiferror(self):
         file = "setup.json"
