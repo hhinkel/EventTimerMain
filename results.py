@@ -84,3 +84,18 @@ class Results:
             return 1
 
         db.closeDatabaseFile()
+
+    def enterresultsintable(self):
+        file = "setup.json"
+        setup = Setup(file)
+
+        db = DbHelper()
+        db.setDatabaseFile(setup.databaseFile)
+        db.connectToDatabase()
+
+        db.dbCursor.execute("INSERT INTO xcResultTable VALUES (?,?,?,?,?,?,?,?,?,?)",
+                            (self.riderNum, self.division, self.startTime, self.finishTime,  self.timeOnCourse,
+                             self.timeFaults, self.speedFaults, self.overTime, self.totalFaults, self.error))
+        db.dbConnection.commit()
+
+        db.closeDatabaseFile()

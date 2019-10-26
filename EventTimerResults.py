@@ -44,4 +44,4 @@ for division in alldivisions:
         result.calculateresults(rider, div.optTimeSec, div.minTimeSec, div.timeLimit)
         print(f'\t{result.riderNum} {result.division} {result.startTime} {result.finishTime} {result.timeOnCourse}'
               f' {result.timeFaults} {result.speedFaults} {result.overTime} {result.totalFaults} {result.error}')
-        # put results in database
+        result.enterresultsintable()
