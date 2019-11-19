@@ -38,7 +38,6 @@ setup = Setup(file)
 
 db = DbHelper()
 db.createdatabase(setup.databaseFile)
-
 mqttc = mqtt.Client()
 
 # Assign event callbacks
