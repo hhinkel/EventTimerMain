@@ -27,7 +27,7 @@ class DbHelper:
 
     def openDatabaseFileRead(self):
         try:
-            DbHelper.dbConnection = open(DbHelper.riderDbFile,"ro")
+            DbHelper.dbConnection = open(DbHelper.riderDbFile)
         except FileNotFoundError:
             print("Cannot open or create database file " + DbHelper.riderDbFile)
 
@@ -103,3 +103,8 @@ class DbHelper:
         self.closeDatabaseFile()
 
         return rows
+
+    def selectFromTable(self, query):
+        cursor = self.dbCursor
+        cursor.execute(query)
+        return cursor.fetchall()

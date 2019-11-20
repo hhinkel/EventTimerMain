@@ -1,46 +1,52 @@
 import sys
-from PyQt5 import QtWidgets, QtSql, QtCore
-from tableWindow import tablewindow
+import datetime
+import sqlite3
+from PyQt5 import QtWidgets, uic
+from PyQt5.QtWidgets import QMainWindow
+
+from dbHelper import DbHelper
 
 
-def createConnection():
-    db = QtSql.QSqlDatabase.addDatabase('QSQLITE')
-    db.setDatabaseName('event.db')
-    return db
+# open and connect to database
+def opendatabase(filename, db):
+    db.setDatabaseFile(filename)
+    db.connectToDatabase()
+    db.openDatabaseFileRead()
+
+def converttime(millsecs):
+    time = datetime.datetime.fromtimestamp(millsecs/1000)
+    return time
+
+def loaddata(db, window):
+    riders = db.selectFromTable('SELECT * FROM xcResultTable')
+
+    for row_number,rider in enumerate(riders):
+        window.tableWidget.insertRow(row_number)
+        window.tableWidget.setItem(row_number, 0, QtWidgets.QTableWidgetItem(str(rider[0])))
+        window.tableWidget.setItem(row_number, 1, QtWidgets.QTableWidgetItem(str(rider[1])))
+        window.tableWidget.setItem(row_number, 2, QtWidgets.QTableWidgetItem(str(converttime(rider[2]))))
+        window.tableWidget.setItem(row_number, 3, QtWidgets.QTableWidgetItem(str(converttime(rider[3]))))
+        window.tableWidget.setItem(row_number, 4, QtWidgets.QTableWidgetItem(str(rider[4])))
+        window.tableWidget.setItem(row_number, 5, QtWidgets.QTableWidgetItem(str(rider[5])))
+        window.tableWidget.setItem(row_number, 6, QtWidgets.QTableWidgetItem(str(rider[6])))
+        window.tableWidget.setItem(row_number, 7, QtWidgets.QTableWidgetItem(str(rider[7])))
+        window.tableWidget.setItem(row_number, 8, QtWidgets.QTableWidgetItem(str(rider[8])))
+        window.tableWidget.setItem(row_number, 9, QtWidgets.QTableWidgetItem(str(rider[9])))
 
 
-def initializeModel(model):
-    model = QtSql.QSqlTableModel()
-    model.setTable('xcResultTable')
-    model.setEditStrategy(QtSql.QSqlTableModel.OnManualSubmit)
-    model.select()
-
-    model.setHeaderData(0, QtCore.Qt.Horizontal, 'Rider Number')
-    model.setHeaderData(1, QtCore.Qt.Horizontal, 'Division')
-    model.setHeaderData(2, QtCore.Qt.Horizontal, 'Time On Course')
-
-
-def createView(title, model):
-    view = QtWidgets.QTableView()
-    view.setModel(model)
-    view.setWindowTitle(title)
-    return view
-
-
+# Setup Application
 def main():
     app = QtWidgets.QApplication([])
-    db = createConnection()
-    ok = db.open()
-    if not ok:
-        sys.exit(15)
-    model = QtSql.QSqlTableModel()
-    initializeModel(model)
+    window = uic.loadUi('test.ui')
 
-    view = createView('Tabel Model (View 1)', model)
-    view.show()
+    db = DbHelper()
+    try:
+        opendatabase('event.db', db)
+    except sqlite3.DatabaseError as error:
+        print("Cannot connect to Database ", DbHelper.riderDbFile, " ", error.args[0])
 
-    application = tablewindow()
-    application.show()
+    loaddata(db, window)
+    window.show()
     sys.exit(app.exec())
 
 
