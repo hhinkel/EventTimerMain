@@ -1,5 +1,3 @@
-import sqlite3
-import time
 import datetime
 from dbHelper import DbHelper
 from setup import Setup
@@ -12,10 +10,6 @@ def createresulttable ():
     db.connectToDatabase()
     db.createXCResultTable()
     db.closeDatabaseFile()
-
-
-def calculateTimeOnCourse(self):
-    return 60 / (self.startTime - self.finishTime)
 
 
 # Global variables
