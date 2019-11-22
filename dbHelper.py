@@ -15,6 +15,12 @@ class DbHelper:
         self.createXCErrorTable()
         self.closeDatabaseFile()
 
+    def createresulttable(self, file):
+        self.setDatabaseFile(file)
+        self.connectToDatabase()
+        self.createXCResultTable()
+        self.closeDatabaseFile()
+
     def setDatabaseFile(self, filename):
         DbHelper.riderDbFile = filename
 
@@ -108,3 +114,6 @@ class DbHelper:
         cursor = self.dbCursor
         cursor.execute(query)
         return cursor.fetchall()
+
+    def counttablerows(self, tablename):
+        return self.dbCursor.execute("SELECT count(*) FROM sqlite_master where type = ? AND name = ?", ('table', tablename)).rowcount

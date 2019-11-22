@@ -1,3 +1,5 @@
+# No longer used can be removed.
+
 import datetime
 from dbHelper import DbHelper
 from setup import Setup

@@ -1,7 +1,9 @@
 import sqlite3
+import datetime
 from rider import Rider
 from dbHelper import DbHelper
 from setup import Setup
+from division import Division
 
 class Results:
     # 0.4 faults per second over optimum time or under speed fault time
@@ -99,3 +101,28 @@ class Results:
         db.dbConnection.commit()
 
         db.closeDatabaseFile()
+
+    def processresults(self):
+        db = DbHelper()
+        setup = Setup("setup.json")
+
+        # create the result table if needed
+        db. createresulttable(setup.databaseFile)
+
+        div = Division()
+        alldivisions = div.getalldivisions(setup.databaseFile)
+
+        for division in alldivisions:
+            div.setdivisionresults(division)
+            print(f'\t{div.division} {div.optSpeed} {div.maxSpeed} {div.timeLimit} {div.distance}'
+                  f' {div.numOfFences} {div.numOfRiders} {div.optTimeSec} {div.minTimeSec}')
+
+            divisionresults = db.getresultsfordivision(setup.databaseFile, div.division)
+
+            for rider in divisionresults:
+                result = Results()
+                result.calculateresults(rider, div.optTimeSec, div.minTimeSec, div.timeLimit)
+                print(
+                    f'\t{result.riderNum} {result.division} {result.startTime} {result.finishTime} {result.timeOnCourse}'
+                    f' {result.timeFaults} {result.speedFaults} {result.overTime} {result.totalFaults} {result.error}')
+                result.enterresultsintable()
