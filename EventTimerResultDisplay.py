@@ -35,9 +35,13 @@ def loaddata(db, window):
             window.tableWidget.setItem(row_number, 8, QtWidgets.QTableWidgetItem(str(rider[8])))
             window.tableWidget.setItem(row_number, 9, QtWidgets.QTableWidgetItem(str(rider[9])))
 
-def processdata():
-    result = Results()
-    result.processresults()
+def processdata(db, window):
+    try:
+        result = Results()
+        result.processresults()
+        loaddata(db, window)
+    except sqlite3.DatabaseError as error:
+        print("xcResultTable Table already exists", " ", error.args[0])
 
 # Setup Application
 def main():
@@ -51,7 +55,7 @@ def main():
         print("Cannot connect to Database ", DbHelper.riderDbFile, " ", error.args[0])
 
     loaddata(db, window)
-    window.processData.clicked.connect(processdata)
+    window.processData.clicked.connect(lambda: processdata(db, window))
     window.show()
     sys.exit(app.exec())
 
