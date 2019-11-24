@@ -103,11 +103,14 @@ class Results:
         db.closeDatabaseFile()
 
     def processresults(self):
-        db = DbHelper()
+        # Database should already be open
         setup = Setup("setup.json")
-
+        db = DbHelper()
+        db.setDatabaseFile(setup.databaseFile)
+        db.connectToDatabase()
+        db.openDatabaseFileRead()
         # create the result table if needed
-        db. createresulttable(setup.databaseFile)
+        db.createresulttable(setup.databaseFile)
 
         div = Division()
         alldivisions = div.getalldivisions(setup.databaseFile)
@@ -117,7 +120,7 @@ class Results:
             print(f'\t{div.division} {div.optSpeed} {div.maxSpeed} {div.timeLimit} {div.distance}'
                   f' {div.numOfFences} {div.numOfRiders} {div.optTimeSec} {div.minTimeSec}')
 
-            divisionresults = db.getresultsfordivision(setup.databaseFile, div.division)
+            divisionresults = db.getresultsfordivision(div.division)
 
             for rider in divisionresults:
                 result = Results()
@@ -126,3 +129,5 @@ class Results:
                     f'\t{result.riderNum} {result.division} {result.startTime} {result.finishTime} {result.timeOnCourse}'
                     f' {result.timeFaults} {result.speedFaults} {result.overTime} {result.totalFaults} {result.error}')
                 result.enterresultsintable()
+
+        db.closeDatabaseFile()

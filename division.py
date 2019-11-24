@@ -9,8 +9,8 @@ class Division:
         db.setDatabaseFile(file)
         db.connectToDatabase()
 
-        DbHelper.dbCursor.execute("SELECT * FROM xcDivisionTable ")
-        rows =  DbHelper.dbCursor.fetchall()
+        db.dbCursor.execute("SELECT * FROM xcDivisionTable ")
+        rows =  db.dbCursor.fetchall()
         db.closeDatabaseFile()
         return rows
 
@@ -20,8 +20,8 @@ class Division:
         db.setDatabaseFile(file)
         db.connectToDatabase()
 
-        DbHelper.dbCursor.execute("SELECT * FROM xcDivisionTable WHERE division = ?", (division,))
-        row = DbHelper.dbCursor.fetchall()
+        db.dbCursor.execute("SELECT * FROM xcDivisionTable WHERE division = ?", (division,))
+        row = db.dbCursor.fetchall()
         db.closeDatabaseFile()
         return row
 

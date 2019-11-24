@@ -16,39 +16,37 @@ class DbHelper:
         self.closeDatabaseFile()
 
     def createresulttable(self, file):
-        self.setDatabaseFile(file)
-        self.connectToDatabase()
+        # Database needs to already be open
         self.createXCResultTable()
-        self.closeDatabaseFile()
 
     def setDatabaseFile(self, filename):
-        DbHelper.riderDbFile = filename
+        self.riderDbFile = filename
 
     def connectToDatabase(self):
         try:
-            DbHelper.dbConnection = sqlite3.connect(DbHelper.riderDbFile)
-            DbHelper.dbCursor = DbHelper.dbConnection.cursor()
+            self.dbConnection = sqlite3.connect(self.riderDbFile)
+            self.dbCursor = self.dbConnection.cursor()
         except sqlite3.DatabaseError as error:
-            print("Cannot connect to Database ",DbHelper.riderDbFile, " ", error.args[0])
+            print("Cannot connect to Database ",self.riderDbFile, " ", error.args[0])
 
     def openDatabaseFileRead(self):
         try:
-            DbHelper.dbConnection = open(DbHelper.riderDbFile)
+            self.dbConnection = open(self.riderDbFile)
         except FileNotFoundError:
-            print("Cannot open or create database file " + DbHelper.riderDbFile)
+            print("Cannot open or create database file " + self.riderDbFile)
 
     def openDatabaseFileAppend(self):
         try:
-            DbHelper.dbConnection = open(DbHelper.riderDbFile,"a")
+            self.dbConnection = open(self.riderDbFile,"a")
         except FileNotFoundError:
-            print("Cannot open or create database file " + DbHelper.riderDbFile)
+            print("Cannot open or create database file " + self.riderDbFile)
 
     def closeDatabaseFile(self):
-        DbHelper.dbConnection.close()
+        self.dbConnection.close()
 
     def createXCTable(self):
         try:
-            DbHelper.dbCursor.execute('''CREATE TABLE IF NOT EXISTS xcTable
+            self.dbCursor.execute('''CREATE TABLE IF NOT EXISTS xcTable
             (rider_num INTEGER PRIMARY KEY,
             division TEXT NOT NULL,
             fence_num INTEGER NOT NULL,
@@ -61,7 +59,7 @@ class DbHelper:
 
     def createFenceTable(self):
         try:
-            DbHelper.dbCursor.execute('''CREATE TABLE IF NOT EXISTS xcFenceTable
+            self.dbCursor.execute('''CREATE TABLE IF NOT EXISTS xcFenceTable
             (rider_num INTEGER NOT NULL,
             division TEXT NOT NULL,
             fence_num INTEGER NOT NULL,
@@ -74,7 +72,7 @@ class DbHelper:
 
     def createXCErrorTable(self):
         try:
-            DbHelper.dbCursor.execute('''CREATE TABLE IF NOT EXISTS xcErrorTable
+            self.dbCursor.execute('''CREATE TABLE IF NOT EXISTS xcErrorTable
             (rider_num INTEGER NOT NULL,
             division TEXT NOT NULL,
             fence_num INTEGER NOT NULL,
@@ -99,21 +97,16 @@ class DbHelper:
         except sqlite3.Error as error:
             print("Cannot create xcResultTable: ", error.args[0])
 
-    def getresultsfordivision(self, file, division):
-        self.setDatabaseFile(file)
-        self.connectToDatabase()
+    def getresultsfordivision(self, division):
 
         self.dbCursor.execute("SELECT * FROM xcTable WHERE division = ?", (division,))
-        rows = DbHelper.dbCursor.fetchall()
-
-        self.closeDatabaseFile()
+        rows = self.dbCursor.fetchall()
 
         return rows
 
     def selectFromTable(self, query):
-        cursor = self.dbCursor
-        cursor.execute(query)
-        return cursor.fetchall()
+        self.dbCursor.execute(query)
+        return self.dbCursor.fetchall()
 
     def counttablerows(self, tablename):
         return self.dbCursor.execute("SELECT count(*) FROM sqlite_master where type = ? AND name = ?", ('table', tablename)).rowcount
