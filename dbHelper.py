@@ -109,4 +109,5 @@ class DbHelper:
         return self.dbCursor.fetchall()
 
     def counttablerows(self, tablename):
-        return self.dbCursor.execute("SELECT count(*) FROM sqlite_master where type = ? AND name = ?", ('table', tablename)).rowcount
+        self.dbCursor.execute("SELECT * FROM {tn}".format (tn=tablename))
+        return len(self.dbCursor.fetchall())

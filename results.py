@@ -1,5 +1,3 @@
-import sqlite3
-import datetime
 from rider import Rider
 from dbHelper import DbHelper
 from setup import Setup
@@ -15,7 +13,6 @@ class Results:
 
         self.riderNum = rider.number
         self.division = rider.division
-        # format the start and finish times here?
         self.startTime = rider.startTime
         self.finishTime = rider.finishTime
         self.timeOnCourse = self.calculateTimeOnCourse()

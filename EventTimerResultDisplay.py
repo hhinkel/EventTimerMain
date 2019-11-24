@@ -39,10 +39,10 @@ def loaddata(window):
     db.closeDatabaseFile()
 
 
-def counttablerows(tablename):
+def counttablerows():
     db = DbHelper()
     opendatabase('event.db', db)
-    rows = db.dbCursor.execute("SELECT count(*) FROM sqlite_master where type = ? AND name = ?", ('table', tablename)).rowcount
+    rows = db.counttablerows('xcResultTable')
     db.closeDatabaseFile()
     return rows
 
@@ -59,11 +59,10 @@ def processdata(window):
 def main():
     app = QtWidgets.QApplication([])
     window = uic.loadUi('test.ui')
-    db = DbHelper()
-    opendatabase('event.db', db)
-    if counttablerows('xcResultTable') > 0:
+
+    if counttablerows() > 0:
         loaddata(window)
-    db.closeDatabaseFile()
+
     window.processData.clicked.connect(lambda: processdata(window))
     window.show()
     sys.exit(app.exec())
