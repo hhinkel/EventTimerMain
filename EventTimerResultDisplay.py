@@ -4,6 +4,7 @@ import sqlite3
 from PyQt5 import QtWidgets, uic
 from dbHelper import DbHelper
 from results import Results
+from division import Division
 
 
 # open and connect to database
@@ -14,8 +15,11 @@ def opendatabase(filename, db):
 
 
 def converttime(millsecs):
-    time = datetime.datetime.fromtimestamp(millsecs/1000)
-    return time
+    return datetime.datetime.fromtimestamp(millsecs / 1000)
+
+
+def getminoncourse(secs):
+    return str(datetime.timedelta(seconds=secs))
 
 
 def loaddata(window):
@@ -29,7 +33,10 @@ def loaddata(window):
         window.tableWidget.setItem(row_number, 1, QtWidgets.QTableWidgetItem(str(rider[1])))
         window.tableWidget.setItem(row_number, 2, QtWidgets.QTableWidgetItem(str(converttime(rider[2]))))
         window.tableWidget.setItem(row_number, 3, QtWidgets.QTableWidgetItem(str(converttime(rider[3]))))
-        window.tableWidget.setItem(row_number, 4, QtWidgets.QTableWidgetItem(str(rider[4])))
+        if rider[4] is None:
+            window.tableWidget.setItem(row_number, 4, QtWidgets.QTableWidgetItem('None'))
+        else:
+            window.tableWidget.setItem(row_number, 4, QtWidgets.QTableWidgetItem(str(getminoncourse(int(rider[4])))))
         window.tableWidget.setItem(row_number, 5, QtWidgets.QTableWidgetItem(str(rider[5])))
         window.tableWidget.setItem(row_number, 6, QtWidgets.QTableWidgetItem(str(rider[6])))
         window.tableWidget.setItem(row_number, 7, QtWidgets.QTableWidgetItem(str(rider[7])))
@@ -57,6 +64,8 @@ def processdata(window):
 
 # Setup Application
 def main():
+    div = Division()
+    div.setupdivision()
     app = QtWidgets.QApplication([])
     window = uic.loadUi('test.ui')
 

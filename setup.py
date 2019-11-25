@@ -1,5 +1,6 @@
 import json
 
+
 class Setup:
     user = None
     key = None
@@ -7,6 +8,7 @@ class Setup:
     port = None
     topic = None
     databaseFile = None
+    divisions = None
 
     def __init__(self, file):
         with open(file) as jsonFile:
@@ -17,4 +19,4 @@ class Setup:
             self.port = data["port"]
             self.topic = data["topic"]
             self.databaseFile = data["databaseFile"]
-        
+            self.divisions = data["divisions"]

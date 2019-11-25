@@ -70,8 +70,7 @@ class Results:
             return float(self.timeFaults) + float(self.speedFaults)
 
     def determineiferror(self):
-        file = "setup.json"
-        setup = Setup(file)
+        setup = Setup("setup.json")
 
         db = DbHelper()
         db.setDatabaseFile(setup.databaseFile)
@@ -85,8 +84,7 @@ class Results:
         db.closeDatabaseFile()
 
     def enterresultsintable(self):
-        file = "setup.json"
-        setup = Setup(file)
+        setup = Setup("setup.json")
 
         db = DbHelper()
         db.setDatabaseFile(setup.databaseFile)
