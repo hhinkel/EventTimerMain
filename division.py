@@ -7,7 +7,6 @@ class Division:
 
     def getalldivisions(self, file):
         db = DbHelper()
-
         db.setDatabaseFile(file)
         db.connectToDatabase()
 
@@ -41,9 +40,9 @@ class Division:
     def setupdivision(self):
         setup = Setup("setup.json")
         db = DbHelper()
-
         db.setDatabaseFile(setup.databaseFile)
         db.connectToDatabase()
+
         for division in setup.divisions:
             optTime = self.determinetime(division[1], division[4])
             minTime = self.determinetime(division[2], division[4])
@@ -60,4 +59,3 @@ class Division:
         totalsecs = int(distance) / mpersec
 
         return str(datetime.timedelta(seconds=totalsecs))
-
