@@ -127,5 +127,8 @@ class DbHelper:
         return self.dbCursor.fetchall()
 
     def counttablerows(self, tablename):
-        self.dbCursor.execute("SELECT * FROM {tn}".format (tn=tablename))
-        return len(self.dbCursor.fetchall())
+        try:
+            self.dbCursor.execute("SELECT * FROM {tn}".format (tn=tablename))
+            return len(self.dbCursor.fetchall())
+        except sqlite3.OperationalError as error:
+            return 0

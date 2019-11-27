@@ -5,25 +5,13 @@ from dbHelper import DbHelper
 
 class Division:
 
-    def getalldivisions(self, file):
-        db = DbHelper()
-        db.setDatabaseFile(file)
-        db.connectToDatabase()
-
+    def getalldivisions(self, db):
         db.dbCursor.execute("SELECT * FROM xcDivisionTable ")
-        rows =  db.dbCursor.fetchall()
-        db.closeDatabaseFile()
-        return rows
+        return db.dbCursor.fetchall()
 
-    def getonedivision(self, file, division):
-        db = DbHelper()
-
-        db.setDatabaseFile(file)
-        db.connectToDatabase()
-
+    def getonedivision(self, db, division):
         db.dbCursor.execute("SELECT * FROM xcDivisionTable WHERE division = ?", (division,))
         row = db.dbCursor.fetchall()
-        db.closeDatabaseFile()
         return row
 
     def setdivisionresults(self, div):

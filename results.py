@@ -83,21 +83,14 @@ class Results:
 
         db.closeDatabaseFile()
 
-    def enterresultsintable(self):
-        setup = Setup("setup.json")
-
-        db = DbHelper()
-        db.setDatabaseFile(setup.databaseFile)
-        db.connectToDatabase()
-
+    def enterresultsintable(self, db):
         db.dbCursor.execute("INSERT INTO xcResultTable VALUES (?,?,?,?,?,?,?,?,?,?)",
                             (self.riderNum, self.division, self.startTime, self.finishTime,  self.timeOnCourse,
                              self.timeFaults, self.speedFaults, self.overTime, self.totalFaults, self.error))
         db.dbConnection.commit()
 
-        db.closeDatabaseFile()
 
-    def processresults(self):
+    def processresults(self, process_div):
         # Database should already be open
         setup = Setup("setup.json")
         db = DbHelper()
@@ -108,9 +101,12 @@ class Results:
         db.createresulttable(setup.databaseFile)
 
         div = Division()
-        alldivisions = div.getalldivisions(setup.databaseFile)
+        if div == "All":
+            divisions = div.getalldivisions(db)
+        else:
+            divisions = div.getonedivision(db, process_div)
 
-        for division in alldivisions:
+        for division in divisions:
             div.setdivisionresults(division)
             print(f'\t{div.division} {div.optSpeed} {div.maxSpeed} {div.timeLimit} {div.distance}'
                   f' {div.numOfFences} {div.numOfRiders} {div.optTimeSec} {div.minTimeSec}')
@@ -118,11 +114,10 @@ class Results:
             divisionresults = db.getresultsfordivision(div.division)
 
             for rider in divisionresults:
-                result = Results()
-                result.calculateresults(rider, div.optTimeSec, div.minTimeSec, div.timeLimit)
+                self.calculateresults(rider, div.optTimeSec, div.minTimeSec, div.timeLimit)
                 print(
-                    f'\t{result.riderNum} {result.division} {result.startTime} {result.finishTime} {result.timeOnCourse}'
-                    f' {result.timeFaults} {result.speedFaults} {result.overTime} {result.totalFaults} {result.error}')
-                result.enterresultsintable()
+                    f'\t{self.riderNum} {self.division} {self.startTime} {self.finishTime} {self.timeOnCourse}'
+                    f' {self.timeFaults} {self.speedFaults} {self.overTime} {self.totalFaults} {self.error}')
+                self.enterresultsintable(db)
 
         db.closeDatabaseFile()

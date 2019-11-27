@@ -7,7 +7,6 @@ from PyQt5.QtWidgets import QComboBox
 from dbHelper import DbHelper
 from results import Results
 from division import Division
-from setup import Setup
 
 
 # open and connect to database
@@ -26,8 +25,10 @@ def getminoncourse(secs):
 
 
 def createdivisionarray(division):
-    setup = Setup('setup.json')
-    div_rows = division.getalldivisions(setup.databaseFile)
+    db = DbHelper()
+    opendatabase('event.db', db)
+    div_rows = division.getalldivisions(db)
+    db.closeDatabaseFile()
 
     divisions = []
     for div in div_rows:
@@ -76,7 +77,7 @@ def loaddata(window):
 def counttablerows(table):
     db = DbHelper()
     opendatabase('event.db', db)
-    rows = db.counttablerows('xcResultTable')
+    rows = db.counttablerows(table)
     db.closeDatabaseFile()
     return rows
 
@@ -86,9 +87,10 @@ def process_on_change(text):
 
 
 def processdata(window):
+    division = window.processDivisions.currentText()
     try:
         result = Results()
-        result.processresults()
+        result.processresults(division)
     except sqlite3.DatabaseError as error:
         print("xcResultTable Table already exists ", error.args[0])
     loaddata(window)
@@ -113,7 +115,6 @@ def main():
         loaddata(window)
 
     # Process screen activity
-    window.processDivisions.activated[str].connect(process_on_change)
     window.printDivisions.activated[str].connect(process_on_change)
     window.processData.clicked.connect(lambda: processdata(window))
 
