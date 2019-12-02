@@ -1,4 +1,6 @@
 import sqlite3
+from setup import Setup
+from utils import Utils
 
 
 class DbHelper:
@@ -58,7 +60,8 @@ class DbHelper:
             minTime INTEGER,
             numOfFences INTEGER NOT NULL,
             numOfRiders INTEGER)''')
-            self.setupdivision()
+            setup = Setup("setup.json")
+            Utils.division_setup(self)
         except sqlite3.Error as error:
             print("Cannot create xcDivisionTable: ", error.args[0])
 
@@ -132,3 +135,10 @@ class DbHelper:
             return len(self.dbCursor.fetchall())
         except sqlite3.OperationalError as error:
             return 0
+        
+    def enterresultsintable(self, results):
+        for result in results:
+            self.dbCursor.execute("INSERT INTO xcResultTable VALUES (?,?,?,?,?,?,?,?,?,?)",
+            (result[0], result[1], result[2], result[3],  result[4], result[5],
+            result[6], result[7], result[8], result[9]))
+            self.dbConnection.commit()

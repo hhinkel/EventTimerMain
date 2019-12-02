@@ -7,6 +7,17 @@ class Results:
     # 0.4 faults per second over optimum time or under speed fault time
     faultValue = 0.4
 
+    riderNum = None
+    division = None
+    startTime = None
+    finishTime = None
+    timeOnCourse = None
+    timeFaults = None
+    speedFaults = None
+    overTime = None
+    totalFaults = None
+    error = None
+
     def calculateresults(self, riderdata, opttime, mintime, timelimit):
         rider = Rider()
         rider.setriderdata(riderdata)
@@ -21,7 +32,9 @@ class Results:
         self.overTime = self.determineifovertime(timelimit)
         self.totalFaults = self.determinefaults()
         self.error = self.determineiferror()
-        return rider
+
+        return self.riderNum, self.division, self.startTime, self.finishTime, str(self.timeOnCourse), str(self.timeFaults), \
+               str(self.speedFaults), str(self.overTime), str(self.totalFaults), str(self.error)
 
     def calculateTimeOnCourse(self):
         if self.finishTime is 0:
@@ -85,8 +98,8 @@ class Results:
 
     def enterresultsintable(self, db):
         db.dbCursor.execute("INSERT INTO xcResultTable VALUES (?,?,?,?,?,?,?,?,?,?)",
-                            (self.riderNum, self.division, self.startTime, self.finishTime,  self.timeOnCourse,
-                             self.timeFaults, self.speedFaults, self.overTime, self.totalFaults, self.error))
+         (self.riderNum, self.division, self.startTime, self.finishTime,  self.timeOnCourse, self.timeFaults,
+          self.speedFaults, self.overTime, self.totalFaults, self.error))
         db.dbConnection.commit()
 
 
@@ -96,28 +109,25 @@ class Results:
         db = DbHelper()
         db.setDatabaseFile(setup.databaseFile)
         db.connectToDatabase()
-        db.openDatabaseFileRead()
+        # db.openDatabaseFileRead()
         # create the result table if needed
         db.createresulttable(setup.databaseFile)
 
         div = Division()
-        if div == "All":
+        if process_div == "All":
             divisions = div.getalldivisions(db)
         else:
             divisions = div.getonedivision(db, process_div)
 
+        results = []
         for division in divisions:
             div.setdivisionresults(division)
-            print(f'\t{div.division} {div.optSpeed} {div.maxSpeed} {div.timeLimit} {div.distance}'
-                  f' {div.numOfFences} {div.numOfRiders} {div.optTimeSec} {div.minTimeSec}')
-
             divisionresults = db.getresultsfordivision(div.division)
 
             for rider in divisionresults:
-                self.calculateresults(rider, div.optTimeSec, div.minTimeSec, div.timeLimit)
-                print(
-                    f'\t{self.riderNum} {self.division} {self.startTime} {self.finishTime} {self.timeOnCourse}'
-                    f' {self.timeFaults} {self.speedFaults} {self.overTime} {self.totalFaults} {self.error}')
-                self.enterresultsintable(db)
+                result = self.calculateresults(rider, div.optTimeSec, div.minTimeSec, div.timeLimit)
+                results.append(result)
 
+        db.enterresultsintable(results)
         db.closeDatabaseFile()
+

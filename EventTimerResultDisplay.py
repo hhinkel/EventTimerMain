@@ -4,9 +4,10 @@ import sqlite3
 from PyQt5 import QtWidgets, uic
 from PyQt5.QtWidgets import QComboBox
 
+from division import Division
 from dbHelper import DbHelper
 from results import Results
-from division import Division
+from utils import Utils
 
 
 # open and connect to database
@@ -61,7 +62,7 @@ def loaddata(window):
         window.tableWidget.setItem(row_number, 1, QtWidgets.QTableWidgetItem(str(rider[1])))
         window.tableWidget.setItem(row_number, 2, QtWidgets.QTableWidgetItem(str(converttime(rider[2]))))
         window.tableWidget.setItem(row_number, 3, QtWidgets.QTableWidgetItem(str(converttime(rider[3]))))
-        if rider[4] is None:
+        if rider[4] == 'None':
             window.tableWidget.setItem(row_number, 4, QtWidgets.QTableWidgetItem('None'))
         else:
             window.tableWidget.setItem(row_number, 4, QtWidgets.QTableWidgetItem(str(getminoncourse(int(rider[4])))))
@@ -95,18 +96,21 @@ def processdata(window):
         print("xcResultTable Table already exists ", error.args[0])
     loaddata(window)
 
+
 # Setup Application
 def main():
-    div = Division()
-
+    db = DbHelper()
+    opendatabase('event.db', db)
     # create division table in database if necessary
     if counttablerows('xcDivisionTable') <= 0:
-        div.setupdivision()
+        Utils.division_setup(db)
+    db.closeDatabaseFile()
 
     app = QtWidgets.QApplication([])
     window = uic.loadUi('test.ui')
 
     # populate combo boxes with the events divisions
+    div = Division()
     divisions = createdivisionarray(div)
     setup_division_boxes(window, divisions)
 

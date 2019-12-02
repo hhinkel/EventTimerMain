@@ -24,26 +24,3 @@ class Division:
         self.numOfRiders = div[6]
         self.optTimeSec = int((self.distance / self.optSpeed) * 60)
         self.minTimeSec = int((self.distance / self.maxSpeed) * 60)
-
-    def setupdivision(self):
-        setup = Setup("setup.json")
-        db = DbHelper()
-        db.setDatabaseFile(setup.databaseFile)
-        db.connectToDatabase()
-
-        for division in setup.divisions:
-            optTime = self.determinetime(division[1], division[4])
-            minTime = self.determinetime(division[2], division[4])
-            db.dbCursor.execute("INSERT INTO xcDivisionTable VALUES (?,?,?,?,?,?,?,?,?)",
-             (division[0], int(division[1]), int(division[2]), int(division[3]), int(division[4]), optTime, minTime, int(division[5]), int(division[6])))
-            db.dbConnection.commit()
-
-    def determinetime(self, mpermin, distance):
-        # formula from http://www.myhorsechat.com/2013/03/14/how-to-calculate-the-optimum-time-in-eventing/
-        # convert meters per min to meters per second
-        mpersec = int(mpermin) / 60
-
-        # determine the number of seconds needed to cover the distance at the meters per second determined above
-        totalsecs = int(distance) / mpersec
-
-        return str(datetime.timedelta(seconds=totalsecs))
