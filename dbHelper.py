@@ -1,6 +1,6 @@
 import sqlite3
 from setup import Setup
-from utils import Utils
+from utils import division_setup
 
 
 class DbHelper:
@@ -61,7 +61,8 @@ class DbHelper:
             numOfFences INTEGER NOT NULL,
             numOfRiders INTEGER)''')
             setup = Setup("setup.json")
-            Utils.division_setup(self)
+            db = self
+            division_setup(self)
         except sqlite3.Error as error:
             print("Cannot create xcDivisionTable: ", error.args[0])
 
