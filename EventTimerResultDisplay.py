@@ -7,7 +7,7 @@ from PyQt5.QtWidgets import QComboBox
 from division import Division
 from dbHelper import DbHelper
 from results import Results
-from utils import Utils
+from utils import division_setup
 
 
 # open and connect to database
@@ -56,7 +56,7 @@ def loaddata(window):
     opendatabase('event.db', db)
     riders = db.selectFromTable('SELECT * FROM xcResultTable')
 
-    for row_number,rider in enumerate(riders):
+    for row_number, rider in enumerate(riders):
         window.tableWidget.insertRow(row_number)
         window.tableWidget.setItem(row_number, 0, QtWidgets.QTableWidgetItem(str(rider[0])))
         window.tableWidget.setItem(row_number, 1, QtWidgets.QTableWidgetItem(str(rider[1])))
@@ -103,7 +103,7 @@ def main():
     opendatabase('event.db', db)
     # create division table in database if necessary
     if counttablerows('xcDivisionTable') <= 0:
-        Utils.division_setup(db)
+        division_setup(db)
     db.closeDatabaseFile()
 
     app = QtWidgets.QApplication([])
